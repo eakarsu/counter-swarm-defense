@@ -13,6 +13,11 @@ import ExportPage from './pages/ExportPage';
 import AuditLogPage from './pages/AuditLogPage';
 import SearchPage from './pages/SearchPage';
 import SampleDataPage from './pages/SampleDataPage';
+import ThreatSignaturesPage from './pages/ThreatSignaturesPage';
+import FusionTracksPage from './pages/FusionTracksPage';
+import EngagementsPage from './pages/EngagementsPage';
+import EffectorMagazinesPage from './pages/EffectorMagazinesPage';
+import RoePage from './pages/RoePage';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   return localStorage.getItem('token') ? <>{children}</> : <Navigate to="/login" replace />;
@@ -35,6 +40,11 @@ export default function App() {
                 <Route path="/sensors" element={<SensorsPage />} />
                 <Route path="/incidents" element={<IncidentsPage />} />
                 <Route path="/zones" element={<ZonesPage />} />
+                <Route path="/threat-signatures" element={<ThreatSignaturesPage />} />
+                <Route path="/fusion-tracks" element={<FusionTracksPage />} />
+                <Route path="/engagements" element={<EngagementsPage />} />
+                <Route path="/effector-magazines" element={<EffectorMagazinesPage />} />
+                <Route path="/roe" element={<RoePage />} />
                 <Route path="/ai" element={<AICenter />} />
                 <Route path="/ai-extras" element={<Navigate to="/ai" replace />} />
                 <Route path="/export" element={<ExportPage />} />

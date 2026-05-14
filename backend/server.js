@@ -21,6 +21,13 @@ app.use('/api/search', require('./routes/search'));
 app.use('/api/admin', require('./routes/sample_data'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 
+// Deep features (audit implementation 2026-05-14)
+app.use('/api/threat-signatures', require('./routes/threat-signatures'));
+app.use('/api/fusion-tracks', require('./routes/fusion-tracks'));
+app.use('/api/engagements', require('./routes/engagements'));
+app.use('/api/effector-magazines', require('./routes/effector-magazines'));
+app.use('/api/roe', require('./routes/roe'));
+
 app.use('/api/gap-ai-jamming-effectiveness', require('./routes/gap-ai-jamming-effectiveness'));
 app.use('/api/gap-ai-cost-per-kill', require('./routes/gap-ai-cost-per-kill'));
 app.use('/api/gap-ai-multi-sensor-fusion', require('./routes/gap-ai-multi-sensor-fusion'));
