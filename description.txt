@@ -1,0 +1,18 @@
+Counter-Swarm Defense
+By Tyler Bosmeny
+
+Last month, a swarm of cheap Iranian drones took out an AWS data center. Nobody stopped them.
+
+Now imagine an incoming swarm of a thousand coordinated drones. We'd stand no chance. While everyone is racing to stop individual drones, the next wave is coming and it's worse: not one drone, but swarms. Cheap, autonomous, jam-resistant, and lethal.
+
+A Patriot missile costs three million dollars. An FPV drone? Five hundred bucks. All of the cost advantage lies with the attackers. We are not ready.
+
+Today, counter-drone defense is a messy pile of radars, cameras, jammers, interceptors, humans with binoculars, and systems that don't talk to each other. That might work against a hobby drone. It will not work against a swarm.
+
+I want to fund founders building the counter-swarm stack.
+
+That could mean high-capacity interceptors — a single platform that neutralizes fifty drones, not one. Software that fuses every sensor and every defender on a site into a single real-time picture. We need non-kinetic defenses that don't exist yet: aerosols that foul rotors, streamers that entangle swarms. We need new attacks on the autonomy stack itself now that radio jamming is becoming obsolete.
+
+The key insight is drone defense is looking less and less like operating a weapon and more like running a real-time distributed system. The winning companies will look more like Cloudflare than Raytheon.
+
+If you're working on the future of drone defense, and how we can restore the cost advantage to defenders — we want to hear from you.
