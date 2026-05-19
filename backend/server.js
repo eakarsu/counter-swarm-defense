@@ -44,6 +44,16 @@ app.use('/api/cf-allied-threat-library', require('./routes/cf-allied-threat-libr
 app.use('/api/cf-interceptor-matcher', require('./routes/cf-interceptor-matcher'));
 app.use('/api/cf-ml-after-action', require('./routes/cf-ml-after-action'));
 app.use('/api/cf-synthetic-wargame', require('./routes/cf-synthetic-wargame'));
+
+// Health endpoint (used by harness verification).
+app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'swarmshield', ts: new Date().toISOString() }));
+
+// Custom Views — mounted BEFORE the 404/error handler.
+app.use('/api/custom-views', require('./routes/customViews'));
+
+// 404 for unmatched /api/* routes.
+app.use('/api', (req, res) => res.status(404).json({ error: 'Not found', path: req.path }));
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: err.message });
