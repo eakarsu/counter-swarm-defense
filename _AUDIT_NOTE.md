@@ -184,3 +184,84 @@ Log: `/Users/erolakarsu/projects/_AUDIT/apply3_logs/dashboard_counter-swarm-defe
 - Cleanup: backend killed, port 3006 clear, `dist/` removed.
 
 Log: `/Users/erolakarsu/projects/_AUDIT/apply3_logs/merge_ai_counter-swarm-defense.md`.
+
+## Apply pass 7 (full backlog implementation)
+
+**Action:** Implemented 4 backlog features identified from `description.txt` mission goals
+that were not addressed by prior passes (the 16 gap-*/cf-* features remain NEEDS-CREDS
+503 stubs and were intentionally skipped per directive). All new operational/lethal-decision
+items are **advisory only** with `requires_human_authorization: true` and no autonomous
+fire-control/dispense path. No new dependencies, no breaking changes.
+
+### Items implemented
+
+1. **High-Capacity Interceptors** — single-platform multi-drone effector catalog (covers
+   description: "a single platform that neutralizes fifty drones, not one").
+2. **Non-Kinetic Effectors** — aerosols, entanglement streamers, foul-rotor agents,
+   soft-kill DE (covers description: "aerosols that foul rotors, streamers that entangle swarms").
+3. **Autonomy-Stack Attack Vectors** — defensive awareness catalog of detection cues +
+   mitigations targeting adversary autonomy weaknesses (covers description: "new attacks
+   on the autonomy stack itself now that radio jamming is becoming obsolete"). Defensive
+   framing only.
+4. **Cost-Advantage Calculator** — deterministic exchange-ratio analyzer + portfolio
+   snapshot from existing `countermeasures`/`effector_magazines` tables (covers
+   description: "restore the cost advantage to defenders").
+
+### Backend endpoints (new)
+
+- `GET|POST|PUT|DELETE /api/high-capacity-interceptors[/:id]` + `POST /api/high-capacity-interceptors/advise`
+- `GET|POST|PUT|DELETE /api/non-kinetic-effectors[/:id]` + `POST /api/non-kinetic-effectors/advise`
+- `GET|POST|PUT|DELETE /api/autonomy-attack-vectors[/:id]` + `POST /api/autonomy-attack-vectors/assess`
+- `POST /api/cost-advantage/analyze` + `GET /api/cost-advantage/snapshot`
+
+Every `/advise`, `/assess`, `/analyze`, `/snapshot` response sets `advisory: true` +
+`requires_human_authorization: true` + an explicit `framing` string.
+
+### Tables (lazy-created via `CREATE TABLE IF NOT EXISTS` — schema.sql untouched)
+
+- `high_capacity_interceptors`
+- `non_kinetic_effectors`
+- `autonomy_attack_vectors`
+- (cost-advantage reads existing `countermeasures` / `effector_magazines` only)
+
+### Frontend pages (new)
+
+- `/high-capacity-interceptors` — catalog + advisory engagement-plan modal
+- `/non-kinetic-effectors` — catalog + advisory effector-recommendation modal
+- `/autonomy-attack-vectors` — defensive catalog + advisory profile assessment modal
+- `/cost-advantage` — exchange-ratio calculator + portfolio snapshot
+
+Each page header carries the `Advisory only — requires_human_authorization` banner.
+
+### Files
+
+Created:
+- `backend/routes/high-capacity-interceptors.js`
+- `backend/routes/non-kinetic-effectors.js`
+- `backend/routes/autonomy-attack-vectors.js`
+- `backend/routes/cost-advantage.js`
+- `frontend/src/pages/HighCapacityInterceptorsPage.tsx`
+- `frontend/src/pages/NonKineticEffectorsPage.tsx`
+- `frontend/src/pages/AutonomyAttackVectorsPage.tsx`
+- `frontend/src/pages/CostAdvantagePage.tsx`
+
+Modified:
+- `backend/server.js` — 4 new `app.use(...)` mounted **before** the `/api` 404 handler.
+- `frontend/src/App.tsx` — 4 new imports + 4 new `<Route>` entries.
+- `frontend/src/components/Layout.tsx` — new "Advisory (human-auth)" sidebar group with 4 links + 4 lucide icons (`Rocket`, `Wind`, `Brain`, `Calculator`).
+
+### Syntax check
+
+- `node --check` PASS for all 4 new backend route files and modified `server.js`.
+- Backend module-load smoke: all 4 new routers load via `require()` with no runtime errors.
+- Frontend `tsc --noEmit -p .` produces only 4 pre-existing warnings (`CodexCustomVizFeature`, `FusionTracksPage`, `ThreatSignaturesPage`, `TimelineView`); zero errors in any new file.
+
+### Constraints honored
+
+- No new npm dependencies; reused `express`, `pool`, `verifyToken`, `apiFetch`, `lucide-react` icons.
+- No edits to `schema.sql`, `seed.sql`, `start.sh`, or any pre-existing route/page.
+- All `/advise`, `/assess`, `/analyze` endpoints emit `requires_human_authorization: true`.
+- No autonomous fire-control/dispense pathways. NEEDS-CREDS (503) AI stub routes were skipped per directive.
+
+**Status:** PASS.
+

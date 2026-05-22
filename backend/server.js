@@ -51,6 +51,12 @@ app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'swarmsh
 // Custom Views — mounted BEFORE the 404/error handler.
 app.use('/api/custom-views', require('./routes/customViews'));
 
+// Apply pass 7 — backlog items (advisory-only, requires_human_authorization on lethal-decision paths).
+app.use('/api/high-capacity-interceptors', require('./routes/high-capacity-interceptors'));
+app.use('/api/non-kinetic-effectors', require('./routes/non-kinetic-effectors'));
+app.use('/api/autonomy-attack-vectors', require('./routes/autonomy-attack-vectors'));
+app.use('/api/cost-advantage', require('./routes/cost-advantage'));
+
 // 404 for unmatched /api/* routes.
 app.use('/api', (req, res) => res.status(404).json({ error: 'Not found', path: req.path }));
 

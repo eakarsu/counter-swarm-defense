@@ -19,6 +19,15 @@ import EngagementsPage from './pages/EngagementsPage';
 import EffectorMagazinesPage from './pages/EffectorMagazinesPage';
 import RoePage from './pages/RoePage';
 import CustomViewsPage from './pages/CustomViewsPage';
+import HighCapacityInterceptorsPage from './pages/HighCapacityInterceptorsPage';
+import NonKineticEffectorsPage from './pages/NonKineticEffectorsPage';
+import AutonomyAttackVectorsPage from './pages/AutonomyAttackVectorsPage';
+import CostAdvantagePage from './pages/CostAdvantagePage';
+
+import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
+import CodexOperationsFeature from './pages/CodexOperationsFeature';
+
+import TimelineView from './pages/TimelineView';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   return localStorage.getItem('token') ? <>{children}</> : <Navigate to="/login" replace />;
@@ -28,6 +37,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/insights/timeline" element={<TimelineView />} />
+        <Route path="/codex/custom-viz" element={<CodexCustomVizFeature />} />
+        <Route path="/codex/operations" element={<CodexOperationsFeature />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/*" element={
           <PrivateRoute>
@@ -47,6 +60,10 @@ export default function App() {
                 <Route path="/effector-magazines" element={<EffectorMagazinesPage />} />
                 <Route path="/roe" element={<RoePage />} />
                 <Route path="/custom-views" element={<CustomViewsPage />} />
+                <Route path="/high-capacity-interceptors" element={<HighCapacityInterceptorsPage />} />
+                <Route path="/non-kinetic-effectors" element={<NonKineticEffectorsPage />} />
+                <Route path="/autonomy-attack-vectors" element={<AutonomyAttackVectorsPage />} />
+                <Route path="/cost-advantage" element={<CostAdvantagePage />} />
                 <Route path="/ai" element={<AICenter />} />
                 <Route path="/ai-extras" element={<Navigate to="/ai" replace />} />
                 <Route path="/export" element={<ExportPage />} />

@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Shield, AlertTriangle, Crosshair, Zap, Radio, FileWarning, Map, Sparkles, LogOut, Search, Download, ScrollText, Database, LayoutDashboard, Fingerprint, Activity, Target, Package, Gavel, Layers } from 'lucide-react';
+import { Shield, AlertTriangle, Crosshair, Zap, Radio, FileWarning, Map, Sparkles, LogOut, Search, Download, ScrollText, Database, LayoutDashboard, Fingerprint, Activity, Target, Package, Gavel, Layers, Rocket, Wind, Brain, Calculator } from 'lucide-react';
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -17,6 +17,13 @@ const cuasItems = [
   { path: '/engagements', label: 'Engagements (DITDEA)', icon: Target },
   { path: '/effector-magazines', label: 'Magazines & CPK', icon: Package },
   { path: '/roe', label: 'Rules of Engagement', icon: Gavel },
+];
+
+const advisoryItems = [
+  { path: '/high-capacity-interceptors', label: 'High-Capacity Interceptors', icon: Rocket },
+  { path: '/non-kinetic-effectors', label: 'Non-Kinetic Effectors', icon: Wind },
+  { path: '/autonomy-attack-vectors', label: 'Autonomy Vectors', icon: Brain },
+  { path: '/cost-advantage', label: 'Cost-Advantage', icon: Calculator },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -58,6 +65,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Link key={path} to={path}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   location.pathname === path ? 'bg-violet-700 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                }`}>
+                <Icon size={18} />{label}
+              </Link>
+            ))}
+          </div>
+          <div className="pt-4">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Advisory (human-auth)</p>
+            {advisoryItems.map(({ path, label, icon: Icon }) => (
+              <Link key={path} to={path}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  location.pathname === path ? 'bg-amber-700 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'
                 }`}>
                 <Icon size={18} />{label}
               </Link>
