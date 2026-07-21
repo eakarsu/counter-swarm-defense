@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, X, Radio, Shield, Crosshair } from 'lucide-react';
+import { Search, X, Radio, Crosshair } from 'lucide-react';
 import { apiFetch } from '../api';
 
 type Sig = {

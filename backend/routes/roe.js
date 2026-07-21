@@ -16,7 +16,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
-const { verifyToken } = require('../middleware/auth');
+const { requireRole, verifyToken } = require('../middleware/auth');
 
 router.use(verifyToken);
 
@@ -40,7 +40,7 @@ router.get('/rules/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.post('/rules', async (req, res) => {
+router.post('/rules', requireRole('admin', 'commander'), async (req, res) => {
   try {
     const b = req.body || {};
     const r = await pool.query(
@@ -52,7 +52,7 @@ router.post('/rules', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.put('/rules/:id', async (req, res) => {
+router.put('/rules/:id', requireRole('admin', 'commander'), async (req, res) => {
   try {
     const b = req.body || {};
     const r = await pool.query(
@@ -66,14 +66,14 @@ router.put('/rules/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.delete('/rules/:id', async (req, res) => {
+router.delete('/rules/:id', requireRole('admin', 'commander'), async (req, res) => {
   try {
     await pool.query('DELETE FROM roe_rules WHERE id=$1', [req.params.id]);
     res.json({ success: true });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.post('/rules/:id/activate', async (req, res) => {
+router.post('/rules/:id/activate', requireRole('admin', 'commander'), async (req, res) => {
   try {
     const r = await pool.query('UPDATE roe_rules SET active=true WHERE id=$1 RETURNING *', [req.params.id]);
     if (!r.rows.length) return res.status(404).json({ error: 'Not found' });
@@ -81,7 +81,7 @@ router.post('/rules/:id/activate', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.post('/rules/:id/deactivate', async (req, res) => {
+router.post('/rules/:id/deactivate', requireRole('admin', 'commander'), async (req, res) => {
   try {
     const r = await pool.query('UPDATE roe_rules SET active=false WHERE id=$1 RETURNING *', [req.params.id]);
     if (!r.rows.length) return res.status(404).json({ error: 'Not found' });
@@ -139,32 +139,41 @@ router.post('/authorizations', async (req, res) => {
     const r = await pool.query(
       `INSERT INTO roe_authorizations (engagement_id,rule_id,requested_by,decision,rationale)
        VALUES ($1,$2,$3,COALESCE($4,'pending'),$5) RETURNING *`,
-      [b.engagement_id, b.rule_id, b.requested_by || req.user?.email, b.decision, b.rationale]
+      [b.engagement_id, b.rule_id, req.user.email, 'pending', b.rationale]
     );
     res.status(201).json(r.rows[0]);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.post('/authorizations/:id/decide', async (req, res) => {
+router.post('/authorizations/:id/decide', requireRole('admin', 'commander'), async (req, res, next) => {
+  const client = await pool.connect();
   try {
+    await client.query('BEGIN');
     const b = req.body || {};
     if (!['approved', 'denied', 'conditional'].includes(b.decision)) {
+      await client.query('ROLLBACK');
       return res.status(400).json({ error: 'decision must be approved|denied|conditional' });
     }
-    const r = await pool.query(
-      `UPDATE roe_authorizations SET decision=$1, approved_by=$2, decision_at=NOW(), conditions=$3, rationale=COALESCE($4,rationale) WHERE id=$5 RETURNING *`,
-      [b.decision, b.approved_by || req.user?.email, b.conditions, b.rationale, req.params.id]
+    const r = await client.query(
+      `UPDATE roe_authorizations SET decision=$1, approved_by=$2, decision_at=NOW(), conditions=$3, rationale=COALESCE($4,rationale)
+       WHERE id=$5 AND decision='pending' AND requested_by<>$2 RETURNING *`,
+      [b.decision, req.user.email, b.conditions, b.rationale, req.params.id]
     );
-    if (!r.rows.length) return res.status(404).json({ error: 'Not found' });
+    if (!r.rows.length) {
+      await client.query('ROLLBACK');
+      return res.status(409).json({ error: 'Authorization is missing, already decided, or requires a second person' });
+    }
     // If approved, flip engagement.cleared_to_engage=true
     if (b.decision === 'approved' && r.rows[0].engagement_id) {
-      await pool.query(
+      await client.query(
         `UPDATE engagements SET cleared_to_engage=true, authorizing_officer=$1 WHERE id=$2`,
-        [b.approved_by || req.user?.email, r.rows[0].engagement_id]
+        [req.user.email, r.rows[0].engagement_id]
       );
     }
+    await client.query('COMMIT');
     res.json(r.rows[0]);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { await client.query('ROLLBACK'); next(err); }
+  finally { client.release(); }
 });
 
 module.exports = router;

@@ -7,7 +7,7 @@
 //   POST   /api/engagements                       open new engagement (starts at 'detect')
 //   POST   /api/engagements/:id/advance           advance to next phase (logs event)
 //   POST   /api/engagements/:id/event             append arbitrary event
-//   POST   /api/engagements/:id/clear             flip cleared_to_engage=true (records officer)
+//   POST   /api/engagements/:id/clear             retired; use two-person ROE authorization
 //   POST   /api/engagements/:id/close             record outcome and close
 //   POST   /api/engagements/:id/abort             abort engagement
 //   DELETE /api/engagements/:id
@@ -16,7 +16,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
-const { verifyToken } = require('../middleware/auth');
+const { requireRole, verifyToken } = require('../middleware/auth');
 
 router.use(verifyToken);
 
@@ -118,6 +118,9 @@ router.post('/:id/advance', async (req, res) => {
     if (np === 'engage' && !cur.cleared_to_engage) {
       return res.status(403).json({ error: 'Cannot advance to engage: engagement not cleared (call /clear first)' });
     }
+    if (np === 'engage' && !['admin', 'commander'].includes(req.user.role)) {
+      return res.status(403).json({ error: 'Only a commander may advance an authorized engagement' });
+    }
     const r = await pool.query(
       'UPDATE engagements SET current_phase=$1 WHERE id=$2 RETURNING *',
       [np, req.params.id]
@@ -135,29 +138,19 @@ router.post('/:id/event', async (req, res) => {
     const b = req.body || {};
     const r = await pool.query(
       `INSERT INTO engagement_events (engagement_id, phase, actor, event_type, detail) VALUES ($1,$2,$3,$4,$5) RETURNING *`,
-      [req.params.id, b.phase, b.actor || req.user?.email, b.event_type, b.detail]
+      [req.params.id, b.phase, req.user.email, b.event_type, b.detail]
     );
     res.status(201).json(r.rows[0]);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.post('/:id/clear', async (req, res) => {
-  try {
-    const officer = req.body?.officer || req.user?.email || 'unknown';
-    const r = await pool.query(
-      'UPDATE engagements SET cleared_to_engage=true, authorizing_officer=$1 WHERE id=$2 RETURNING *',
-      [officer, req.params.id]
-    );
-    if (!r.rows.length) return res.status(404).json({ error: 'Not found' });
-    await pool.query(
-      `INSERT INTO engagement_events (engagement_id, phase, actor, event_type, detail) VALUES ($1,$2,$3,'cleared-to-engage',$4)`,
-      [req.params.id, r.rows[0].current_phase, officer, req.body?.rationale || 'Engagement authorized']
-    );
-    res.json(r.rows[0]);
-  } catch (err) { res.status(500).json({ error: err.message }); }
-});
+router.post('/:id/clear', (_req, res) => res.status(410).json({
+  error: 'Direct engagement clearance is retired',
+  next_step: 'Create a pending ROE authorization and have a different commander decide it.',
+  requires_human_authorization: true,
+}));
 
-router.post('/:id/close', async (req, res) => {
+router.post('/:id/close', requireRole('admin', 'commander'), async (req, res) => {
   try {
     const b = req.body || {};
     const r = await pool.query(
@@ -173,7 +166,7 @@ router.post('/:id/close', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.post('/:id/abort', async (req, res) => {
+router.post('/:id/abort', requireRole('admin', 'commander'), async (req, res) => {
   try {
     const r = await pool.query(
       `UPDATE engagements SET outcome='aborted', closed_at=NOW() WHERE id=$1 RETURNING *`,
@@ -188,7 +181,7 @@ router.post('/:id/abort', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireRole('admin'), async (req, res) => {
   try {
     await pool.query('DELETE FROM engagements WHERE id=$1', [req.params.id]);
     res.json({ success: true });

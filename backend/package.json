@@ -4,17 +4,26 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "migrate": "node migrate.js",
+    "create-admin": "node create-admin.js",
+    "test": "node test/run.js",
+    "test:vitest": "vitest run",
+    "check": "node --check server.js && node --check migrate.js && node --check create-admin.js && node --check reset-demo.js && node --check middleware/auth.js && node --check middleware/rateLimit.js && node --check services/audit.js && node --check services/telemetry.js && node --check routes/auth.js && node --check routes/audit.js && node --check routes/telemetry.js && node --check routes/triage.js && node --check routes/engagements.js && node --check routes/roe.js"
   },
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2",
+    "express": "^4.22.2",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.2",
+    "supertest": "^7.1.4",
+    "vitest": "^4.1.10"
   }
 }

@@ -22,11 +22,6 @@ export default function Login() {
     } catch (err: any) { setError(err.message); } finally { setLoading(false); }
   }
 
-  function demoLogin() {
-    setEmail('admin@demo.com'); setPassword('demo123');
-    setTimeout(() => document.getElementById('lf')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })), 100);
-  }
-
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -53,10 +48,6 @@ export default function Login() {
             <button type="submit" disabled={loading}
               className="w-full bg-red-700 hover:bg-red-800 disabled:opacity-50 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2">
               <LogIn size={18} /> {loading ? 'Signing in...' : 'Sign In'}
-            </button>
-            <button type="button" onClick={demoLogin}
-              className="w-full bg-gray-700 hover:bg-gray-600 text-gray-200 font-semibold py-3 rounded-lg">
-              Demo Login
             </button>
           </form>
         </div>

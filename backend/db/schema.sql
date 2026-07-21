@@ -1,3 +1,16 @@
+-- Destructive demo bootstrap only. Production startup uses backend/migrate.js.
+DROP TABLE IF EXISTS case_events CASCADE;
+DROP TABLE IF EXISTS evaluation_runs CASCADE;
+DROP TABLE IF EXISTS triage_cases CASCADE;
+DROP TABLE IF EXISTS detection_evidence CASCADE;
+DROP TABLE IF EXISTS detections CASCADE;
+DROP TABLE IF EXISTS suppressions CASCADE;
+DROP TABLE IF EXISTS detection_policies CASCADE;
+DROP TABLE IF EXISTS telemetry_events CASCADE;
+DROP TABLE IF EXISTS telemetry_sources CASCADE;
+DROP TABLE IF EXISTS audit_history CASCADE;
+DROP TABLE IF EXISTS tenants CASCADE;
+DROP TABLE IF EXISTS schema_migrations CASCADE;
 DROP TABLE IF EXISTS engagement_events CASCADE;
 DROP TABLE IF EXISTS engagements CASCADE;
 DROP TABLE IF EXISTS fusion_tracks CASCADE;

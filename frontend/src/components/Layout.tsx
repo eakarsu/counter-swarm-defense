@@ -1,7 +1,8 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Shield, AlertTriangle, Crosshair, Zap, Radio, FileWarning, Map, Sparkles, LogOut, Search, Download, ScrollText, Database, LayoutDashboard, Fingerprint, Activity, Target, Package, Gavel, Layers, Rocket, Wind, Brain, Calculator } from 'lucide-react';
+import { Shield, ShieldCheck, AlertTriangle, Crosshair, Zap, Radio, FileWarning, Map, Sparkles, LogOut, Search, Download, ScrollText, Database, LayoutDashboard, Fingerprint, Activity, Target, Package, Gavel, Layers, Rocket, Wind, Brain, Calculator } from 'lucide-react';
 
 const navItems = [
+  { path: '/security-operations', label: 'Security Operations', icon: ShieldCheck },
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/threats', label: 'Threats', icon: AlertTriangle },
   { path: '/countermeasures', label: 'Countermeasures', icon: Crosshair },

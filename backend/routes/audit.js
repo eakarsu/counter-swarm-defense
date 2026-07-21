@@ -1,58 +1,33 @@
 const express = require('express');
-const router = express.Router();
 const pool = require('../db');
 const { verifyToken } = require('../middleware/auth');
+const { verifyAuditChain } = require('../services/audit');
 
-let initialized = false;
-async function ensureTable() {
-  if (initialized) return;
-  await pool.query(`CREATE TABLE IF NOT EXISTS audit_log (
-    id SERIAL PRIMARY KEY,
-    actor_email VARCHAR(255),
-    action VARCHAR(100),
-    entity_type VARCHAR(50),
-    entity_id VARCHAR(50),
-    details TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
-  )`);
-  initialized = true;
-}
+const router = express.Router();
+router.use(verifyToken);
 
-router.get('/', verifyToken, async (req, res) => {
+router.get('/', async (req, res, next) => {
+  const limit = Math.min(Math.max(Number.parseInt(req.query.limit, 10) || 200, 1), 1000);
   try {
-    await ensureTable();
-    const { search, action, entity_type, limit } = req.query;
-    let q = 'SELECT * FROM audit_log WHERE 1=1';
-    const p = [];
-    if (search) { p.push(`%${search}%`); q += ` AND (actor_email ILIKE $${p.length} OR details ILIKE $${p.length} OR entity_type ILIKE $${p.length})`; }
-    if (action) { p.push(action); q += ` AND action = $${p.length}`; }
-    if (entity_type) { p.push(entity_type); q += ` AND entity_type = $${p.length}`; }
-    q += ' ORDER BY created_at DESC';
-    const lim = Math.min(parseInt(limit) || 200, 1000);
-    p.push(lim);
-    q += ` LIMIT $${p.length}`;
-    res.json((await pool.query(q, p)).rows);
-  } catch (err) { res.status(500).json({ error: err.message }); }
-});
-
-router.post('/', verifyToken, async (req, res) => {
-  try {
-    await ensureTable();
-    const { action, entity_type, entity_id, details } = req.body;
-    const r = await pool.query(
-      'INSERT INTO audit_log (actor_email, action, entity_type, entity_id, details) VALUES ($1,$2,$3,$4,$5) RETURNING *',
-      [req.user?.email || 'unknown', action, entity_type, entity_id != null ? String(entity_id) : null, details]
+    const search = typeof req.query.search === 'string' ? `%${req.query.search.slice(0, 100)}%` : null;
+    const action = typeof req.query.action === 'string' ? req.query.action.slice(0, 100) : null;
+    const entityType = typeof req.query.entity_type === 'string' ? req.query.entity_type.slice(0, 60) : null;
+    const result = await pool.query(
+      `SELECT id,actor_label,action,entity_type,entity_id,details,previous_hash,event_hash,created_at
+       FROM audit_history WHERE tenant_id=$1
+         AND ($2::text IS NULL OR actor_label ILIKE $2 OR action ILIKE $2 OR entity_type ILIKE $2 OR details::text ILIKE $2)
+         AND ($3::text IS NULL OR action=$3)
+         AND ($4::text IS NULL OR entity_type=$4)
+       ORDER BY id DESC LIMIT $5`,
+      [req.user.tenant_id, search, action, entityType, limit],
     );
-    res.status(201).json(r.rows[0]);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+    return res.json(result.rows);
+  } catch (error) { return next(error); }
 });
 
-router.delete('/:id', verifyToken, async (req, res) => {
-  try {
-    await ensureTable();
-    await pool.query('DELETE FROM audit_log WHERE id=$1', [req.params.id]);
-    res.json({ message: 'Deleted' });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+router.get('/verify', async (req, res, next) => {
+  try { return res.json(await verifyAuditChain(pool, req.user.tenant_id)); }
+  catch (error) { return next(error); }
 });
 
 module.exports = router;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Radio, Eye, Volume2, Crosshair, Activity, X } from 'lucide-react';
+import { Radio, Eye, Volume2, Crosshair, Activity, X } from 'lucide-react';
 import { apiFetch } from '../api';
 
 type Track = {

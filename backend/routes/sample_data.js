@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
-const { verifyToken } = require('../middleware/auth');
+const { requireRole, verifyToken } = require('../middleware/auth');
 
 const DEFENSIVE_CONTEXT = 'defensive/training simulation only — educational data for counter-swarm defender drills';
 
@@ -191,14 +191,14 @@ const SEEDERS = {
   zones: seedZones,
 };
 
-router.get('/sample-data/entities', verifyToken, (req, res) => {
+router.get('/sample-data/entities', verifyToken, requireRole('admin'), (req, res) => {
   res.json({
     entities: Object.keys(SEEDERS),
     framing: DEFENSIVE_CONTEXT,
   });
 });
 
-router.post('/sample-data/:entity', verifyToken, async (req, res) => {
+router.post('/sample-data/:entity', verifyToken, requireRole('admin'), async (req, res) => {
   const entity = req.params.entity;
   const seeder = SEEDERS[entity];
   if (!seeder) {

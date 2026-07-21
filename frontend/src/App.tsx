@@ -23,6 +23,7 @@ import HighCapacityInterceptorsPage from './pages/HighCapacityInterceptorsPage';
 import NonKineticEffectorsPage from './pages/NonKineticEffectorsPage';
 import AutonomyAttackVectorsPage from './pages/AutonomyAttackVectorsPage';
 import CostAdvantagePage from './pages/CostAdvantagePage';
+import SecurityOperationsPage from './pages/SecurityOperationsPage';
 
 import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
 import CodexOperationsFeature from './pages/CodexOperationsFeature';
@@ -37,10 +38,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/insights/timeline" element={<TimelineView />} />
-        <Route path="/codex/custom-viz" element={<CodexCustomVizFeature />} />
-        <Route path="/codex/operations" element={<CodexOperationsFeature />} />
-
         <Route path="/login" element={<Login />} />
         <Route path="/*" element={
           <PrivateRoute>
@@ -70,6 +67,10 @@ export default function App() {
                 <Route path="/audit" element={<AuditLogPage />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/sample-data" element={<SampleDataPage />} />
+                <Route path="/security-operations" element={<SecurityOperationsPage />} />
+                <Route path="/insights/timeline" element={<TimelineView />} />
+                <Route path="/codex/custom-viz" element={<CodexCustomVizFeature />} />
+                <Route path="/codex/operations" element={<CodexOperationsFeature />} />
               </Routes>
             </Layout>
           </PrivateRoute>
