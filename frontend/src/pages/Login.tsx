@@ -45,6 +45,15 @@ export default function Login() {
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500" required />
             </div>
             {error && <p className="text-red-400 text-sm">{error}</p>}
+            <button
+              type="button"
+              onClick={() => { setEmail(import.meta.env.VITE_DEMO_EMAIL || ''); setPassword(import.meta.env.VITE_DEMO_PASSWORD || ''); }}
+              disabled={!import.meta.env.VITE_DEMO_EMAIL || !import.meta.env.VITE_DEMO_PASSWORD}
+              aria-label="Auto Fill Demo Credentials"
+              style={{ width: '100%', marginBottom: '12px', padding: '10px 14px', borderRadius: '8px', border: '1px solid currentColor', background: 'transparent', cursor: 'pointer' }}
+            >
+              Auto Fill Demo Credentials
+            </button>
             <button type="submit" disabled={loading}
               className="w-full bg-red-700 hover:bg-red-800 disabled:opacity-50 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2">
               <LogIn size={18} /> {loading ? 'Signing in...' : 'Sign In'}
