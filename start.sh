@@ -2,6 +2,12 @@
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "$PROJECT_DIR/.env" ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source "$PROJECT_DIR/.env"
+  set +a
+fi
 BACKEND_PORT="${PORT:-${BACKEND_PORT:-}}"
 FRONTEND_PORT="${FRONTEND_PORT:-${CLIENT_PORT:-}}"
 INSTALL=false

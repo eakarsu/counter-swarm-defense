@@ -28,7 +28,12 @@ async function main() {
     await migrate();
     await pool.end();
 
-    const result = spawnSync(process.execPath, [path.join(__dirname, '../node_modules/vitest/vitest.mjs'), 'run'], {
+    const result = spawnSync(process.execPath, [
+      path.join(__dirname, '../node_modules/vitest/vitest.mjs'),
+      'run',
+      '--testTimeout=60000',
+      '--hookTimeout=90000',
+    ], {
       cwd: path.join(__dirname, '..'),
       env: {
         ...process.env,

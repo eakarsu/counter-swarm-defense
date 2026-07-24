@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const pool = require('./db');
-const { migrate } = require('./migrate');
 const { rateLimit } = require('./middleware/rateLimit');
 
 function validateConfig() {
@@ -100,7 +99,6 @@ function createApp() {
 
 async function start() {
   validateConfig();
-  await migrate();
   const app = createApp();
   const port = Number(process.env.PORT || 3006);
   return app.listen(port, () => console.log(`SwarmShield backend running on port ${port}`));

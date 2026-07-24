@@ -266,10 +266,11 @@ describe.sequential('evaluation, revocation, and tamper evidence', () => {
     await expect(pool.query('DELETE FROM case_events WHERE id=$1', [caseEvent.id])).rejects.toThrow(/append-only/);
   });
 
-  test('migration ledger records one checksum-verified migration', async () => {
+  test('migration ledger records checksum-verified migrations', async () => {
     const result = await pool.query('SELECT name,sha256 FROM schema_migrations ORDER BY name');
-    expect(result.rows).toHaveLength(1);
+    expect(result.rows).toHaveLength(2);
     expect(result.rows[0].name).toBe('001_security_operations_journey.sql');
-    expect(result.rows[0].sha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(result.rows[1].name).toBe('002_runtime_openrouter_results.sql');
+    for (const migration of result.rows) expect(migration.sha256).toMatch(/^[a-f0-9]{64}$/);
   });
 });
