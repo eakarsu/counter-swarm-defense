@@ -25,8 +25,6 @@ fi
 demo_credentials_email=""
 demo_credentials_password=""
 demo_credentials_tenant="${DEMO_TENANT:-${BOOTSTRAP_TENANT_SLUG:-${GOVERNANCE_TENANT_ID:-${TENANT_ID:-}}}}"
-demo_credentials_tenant="${DEMO_TENANT:-${BOOTSTRAP_TENANT_SLUG:-${GOVERNANCE_TENANT_ID:-${TENANT_ID:-}}}}"
-demo_credentials_tenant="${DEMO_TENANT:-${BOOTSTRAP_TENANT_SLUG:-${GOVERNANCE_TENANT_ID:-${TENANT_ID:-}}}}"
 if [ -n "${PROVISION_ADMIN_EMAIL:-}" ] && [ -n "${PROVISION_ADMIN_PASSWORD:-}" ]; then
   demo_credentials_email="$PROVISION_ADMIN_EMAIL"
   demo_credentials_password="$PROVISION_ADMIN_PASSWORD"
@@ -97,6 +95,9 @@ for argument in "$@"; do
     *) echo "Unknown option: $argument" >&2; exit 2 ;;
   esac
 done
+if [[ "${NODE_ENV:-development}" != production && "${ENABLE_DEMO_CREDENTIAL_AUTOFILL:-true}" == true ]]; then
+  MIGRATE=true
+fi
 
 [[ "$BACKEND_PORT" =~ ^[0-9]+$ ]] || { echo "PORT or BACKEND_PORT must be an assigned numeric port." >&2; exit 2; }
 [[ "$FRONTEND_PORT" =~ ^[0-9]+$ ]] || { echo "FRONTEND_PORT or CLIENT_PORT must be an assigned numeric port." >&2; exit 2; }
