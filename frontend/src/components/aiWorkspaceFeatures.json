@@ -1,0 +1,114 @@
+[
+  {
+    "name": "CfAlliedThreatLibrary",
+    "id": "cf-allied-threat-library",
+    "title": "Allied Forces Threat Library",
+    "description": "Prepare a professional advisory report for allied forces threat library using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "CfHardrealtimeFusion",
+    "id": "cf-hardrealtime-fusion",
+    "title": "Hard-Real-Time Sensor Fusion",
+    "description": "Prepare a professional advisory report for hard-real-time sensor fusion using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "CfInterceptorMatcher",
+    "id": "cf-interceptor-matcher",
+    "title": "Interceptor Matchmaker",
+    "description": "Prepare a professional advisory report for interceptor matchmaker using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "CfMlAfterAction",
+    "id": "cf-ml-after-action",
+    "title": "After-Action ML Loop",
+    "description": "Prepare a professional advisory report for after-action ml loop using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "CfSyntheticWargame",
+    "id": "cf-synthetic-wargame",
+    "title": "Synthetic Swarm Wargame Generator",
+    "description": "Prepare a professional advisory report for synthetic swarm wargame generator using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapAtakCot",
+    "id": "gap-nonai-atak-cot",
+    "title": "ATAK / CoT Interop",
+    "description": "Prepare a professional advisory report for atak / cot interop using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapCostPerKill",
+    "id": "gap-ai-cost-per-kill",
+    "title": "Cost-Per-Kill Optimizer",
+    "description": "Prepare a professional advisory report for cost-per-kill optimizer using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapEffectorDispatch",
+    "id": "gap-nonai-effector-dispatch",
+    "title": "Effector Tasking API",
+    "description": "Prepare a professional advisory report for effector tasking api using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapEwPolicy",
+    "id": "gap-ai-ew-policy",
+    "title": "Electronic Warfare Policy / RoE",
+    "description": "Prepare a professional advisory report for electronic warfare policy / roe using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapJammingEffectiveness",
+    "id": "gap-ai-jamming-effectiveness",
+    "title": "Jamming Effectiveness Predictor",
+    "description": "Prepare a professional advisory report for jamming effectiveness predictor using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapLiveMap",
+    "id": "gap-nonai-live-map",
+    "title": "Live Map UI Integration",
+    "description": "Prepare a professional advisory report for live map ui integration using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapMultiSensorFusion",
+    "id": "gap-ai-multi-sensor-fusion",
+    "title": "Multi-Sensor Fusion",
+    "description": "Prepare a professional advisory report for multi-sensor fusion using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapNiprSiprAuthn",
+    "id": "gap-nonai-nipr-sipr-authn",
+    "title": "NIPRNet/SIPRNet Authn",
+    "description": "Prepare a professional advisory report for niprnet/siprnet authn using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapRawSignalStorage",
+    "id": "gap-nonai-raw-signal-storage",
+    "title": "Video / RF Raw Signal Storage",
+    "description": "Prepare a professional advisory report for video / rf raw signal storage using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapTelemetryStream",
+    "id": "gap-nonai-telemetry-stream",
+    "title": "Real-Time Telemetry Ingest",
+    "description": "Prepare a professional advisory report for real-time telemetry ingest using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "GapZoneCoverageGap",
+    "id": "gap-ai-zone-coverage-gap",
+    "title": "Zone Coverage Gap Analyzer",
+    "description": "Prepare a professional advisory report for zone coverage gap analyzer using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  }
+]

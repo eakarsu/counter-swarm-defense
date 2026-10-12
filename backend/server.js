@@ -82,7 +82,15 @@ function createApp() {
   app.get('/api/health/readiness', async (_req, res, next) => {
     try { await pool.query('SELECT 1'); return res.json({ status: 'ready' }); } catch (error) { return next(error); }
   });
-  app.use('/api', (req, res) => res.status(404).json({ error: 'Not found', path: req.path }));
+
+// Advisory AI reports only; native execution and approval routes stay unchanged.
+const aiWorkspaceSupport = require("./aiWorkspaceAdapters.cjs");
+const aiWorkspaceDatabase = require("./db.js");
+app.use('/api/report-workspace', require("./aiWorkspace.cjs").createAIWorkspaceRouter({
+  pool: aiWorkspaceDatabase, authenticateToken: aiWorkspaceSupport.verifiedActorAuth(require("./middleware/auth.js").verifyToken),
+  aiRateLimiter: aiWorkspaceSupport.createWorkspaceLimiter(), features: require("./aiWorkspaceFeatures.json"),
+}));
+app.use('/api', (req, res) => res.status(404).json({ error: 'Not found', path: req.path }));
   app.use((error, _req, res, _next) => {
     if (process.env.NODE_ENV !== 'test') console.error(error);
     if (error.type === 'entity.too.large') return res.status(413).json({ error: 'Request body is too large' });

@@ -1,3 +1,5 @@
+
+import FullAIExamples, { useFullAIExamples } from "./FullAIExamples";
 import { useState } from 'react';
 import { Sparkles, AlertTriangle, Crosshair, FileWarning, TrendingUp, Compass, Layers, Activity, ListOrdered, GraduationCap } from 'lucide-react';
 import { apiFetch } from '../api';
@@ -20,6 +22,8 @@ function useLoader(call: () => Promise<{ result: string }>): Loader {
 }
 
 export default function AICenter() {
+  const fullAIExamples = useFullAIExamples();
+
   const [tab, setTab] = useState<TabKey>('threat');
 
   // ---- Threat Analysis ----
@@ -53,11 +57,11 @@ export default function AICenter() {
   const fmtL = useLoader(() => apiFetch('/ai-extras/formation-classifier', { method: 'POST', body: JSON.stringify(fmt) }));
 
   // ---- Sensor anomaly ----
-  const [snTxt, setSnTxt] = useState('[{"id":1,"name":"Radar-North-1","battery_pct":18,"detections_today":2,"status":"active"},{"id":2,"name":"Optical-East-3","battery_pct":92,"detections_today":47,"status":"active"}]');
+  const [snTxt, setSnTxt] = useState('[{"name":"Radar-North-1","battery_pct":18,"detections_today":2,"status":"active"},{"name":"Optical-East-3","battery_pct":92,"detections_today":47,"status":"active"}]');
   const snL = useLoader(() => apiFetch('/ai-extras/sensor-anomaly', { method: 'POST', body: JSON.stringify({ sensors: JSON.parse(snTxt) }) }));
 
   // ---- Priority scorer ----
-  const [prTxt, setPrTxt] = useState('[{"id":101,"type":"large_swarm","drone_count":45,"threat_level":9.2,"speed_kmh":85,"zone_name":"Northern Approach"},{"id":102,"type":"single","drone_count":1,"threat_level":3.1,"speed_kmh":40,"zone_name":"Eastern Flank"}]');
+  const [prTxt, setPrTxt] = useState('[{"type":"large_swarm","drone_count":45,"threat_level":9.2,"speed_kmh":85,"zone_name":"Northern Approach"},{"type":"single","drone_count":1,"threat_level":3.1,"speed_kmh":40,"zone_name":"Eastern Flank"}]');
   const prL = useLoader(() => apiFetch('/ai-extras/priority-scorer', { method: 'POST', body: JSON.stringify({ threats: JSON.parse(prTxt) }) }));
 
   // ---- Drill scenario ----
@@ -96,14 +100,14 @@ export default function AICenter() {
     { label: 'Simulation: cluster probe', value: { drone_count: 24, spread_m: 120, altitude_band: '100-200m', speed_kmh: 80, behavior_notes: '[SIMULATION] Cluster formation probing simulated approach lane during scheduled exercise.' } },
   ];
   const snSamples = [
-    { label: 'Drill: low battery', value: '[{"id":1,"name":"Radar-North-1","battery_pct":18,"detections_today":2,"status":"active","tag":"DRILL"},{"id":2,"name":"Optical-East-3","battery_pct":92,"detections_today":47,"status":"active","tag":"DRILL"}]' },
-    { label: 'Training: silent sensor', value: '[{"id":3,"name":"Radar-South-2","battery_pct":74,"detections_today":0,"status":"active","tag":"TRAINING"},{"id":4,"name":"Acoustic-West-1","battery_pct":81,"detections_today":12,"status":"active","tag":"TRAINING"}]' },
-    { label: 'Simulation: spike', value: '[{"id":5,"name":"Optical-North-2","battery_pct":66,"detections_today":210,"status":"active","tag":"SIMULATION"},{"id":6,"name":"Radar-East-1","battery_pct":55,"detections_today":18,"status":"active","tag":"SIMULATION"}]' },
+    { label: 'Drill: low battery', value: '[{"name":"Radar-North-1","battery_pct":18,"detections_today":2,"status":"active","tag":"DRILL"},{"name":"Optical-East-3","battery_pct":92,"detections_today":47,"status":"active","tag":"DRILL"}]' },
+    { label: 'Training: silent sensor', value: '[{"name":"Radar-South-2","battery_pct":74,"detections_today":0,"status":"active","tag":"TRAINING"},{"name":"Acoustic-West-1","battery_pct":81,"detections_today":12,"status":"active","tag":"TRAINING"}]' },
+    { label: 'Simulation: spike', value: '[{"name":"Optical-North-2","battery_pct":66,"detections_today":210,"status":"active","tag":"SIMULATION"},{"name":"Radar-East-1","battery_pct":55,"detections_today":18,"status":"active","tag":"SIMULATION"}]' },
   ];
   const prSamples = [
-    { label: 'Drill: mixed queue', value: '[{"id":101,"type":"large_swarm","drone_count":45,"threat_level":9.2,"speed_kmh":85,"zone_name":"Training Zone N","tag":"DRILL"},{"id":102,"type":"single","drone_count":1,"threat_level":3.1,"speed_kmh":40,"zone_name":"Training Zone E","tag":"DRILL"}]' },
-    { label: 'Training: dual swarm', value: '[{"id":201,"type":"small_swarm","drone_count":8,"threat_level":5.5,"speed_kmh":60,"zone_name":"Range Bravo","tag":"TRAINING"},{"id":202,"type":"small_swarm","drone_count":10,"threat_level":6.2,"speed_kmh":70,"zone_name":"Range Charlie","tag":"TRAINING"}]' },
-    { label: 'Simulation: triage', value: '[{"id":301,"type":"coordinated_attack","drone_count":30,"threat_level":8.8,"speed_kmh":90,"zone_name":"Sim Sector 1","tag":"SIMULATION"},{"id":302,"type":"single","drone_count":1,"threat_level":2.4,"speed_kmh":35,"zone_name":"Sim Sector 2","tag":"SIMULATION"},{"id":303,"type":"small_swarm","drone_count":6,"threat_level":5.0,"speed_kmh":55,"zone_name":"Sim Sector 3","tag":"SIMULATION"}]' },
+    { label: 'Drill: mixed queue', value: '[{"type":"large_swarm","drone_count":45,"threat_level":9.2,"speed_kmh":85,"zone_name":"Training Zone N","tag":"DRILL"},{"type":"single","drone_count":1,"threat_level":3.1,"speed_kmh":40,"zone_name":"Training Zone E","tag":"DRILL"}]' },
+    { label: 'Training: dual swarm', value: '[{"type":"small_swarm","drone_count":8,"threat_level":5.5,"speed_kmh":60,"zone_name":"Range Bravo","tag":"TRAINING"},{"type":"small_swarm","drone_count":10,"threat_level":6.2,"speed_kmh":70,"zone_name":"Range Charlie","tag":"TRAINING"}]' },
+    { label: 'Simulation: triage', value: '[{"type":"coordinated_attack","drone_count":30,"threat_level":8.8,"speed_kmh":90,"zone_name":"Sim Sector 1","tag":"SIMULATION"},{"type":"single","drone_count":1,"threat_level":2.4,"speed_kmh":35,"zone_name":"Sim Sector 2","tag":"SIMULATION"},{"type":"small_swarm","drone_count":6,"threat_level":5.0,"speed_kmh":55,"zone_name":"Sim Sector 3","tag":"SIMULATION"}]' },
   ];
   const drlSamples = [
     { label: 'Drill: easy handoff', value: { difficulty: 'easy', focus_area: 'sensor handoff & coordination', team_size: 4, duration_min: 30 } },
@@ -145,7 +149,7 @@ export default function AICenter() {
   ];
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
+    <div className="p-6 max-w-4xl mx-auto space-y-6" data-full-ai-workspace="AICenter"><FullAIExamples controller={fullAIExamples} />
       <div className="flex items-center gap-3 mb-2"><Sparkles size={28} className="text-violet-400" /><h1 className="text-2xl font-bold text-white">AI Defense Center</h1></div>
       <p className="text-xs text-violet-300/80 -mt-2">All features are framed for defensive, educational, and training simulation use only.</p>
 
@@ -169,7 +173,7 @@ export default function AICenter() {
             ))}
           </div>
           <textarea value={threatInput} onChange={e => setThreatInput(e.target.value)} placeholder="Describe threat: type, drone count, location, altitude, speed, behavior..."
-            rows={4} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm resize-none mb-3" />
+            rows={4} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm resize-none mb-3" data-full-ai-field={fullAIExamples.bind({ current: threatInput, change: e => setThreatInput(e.target.value), label: "threatInput", manual: false, json: false, sample: '' }, "p1-13723", undefined)} />
           <button onClick={runThreat} disabled={threatLoading || !threatInput.trim()}
             className="bg-red-700 hover:bg-red-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
             <Sparkles size={16} />{threatLoading ? 'Analyzing...' : 'Analyze Threat'}
@@ -188,13 +192,13 @@ export default function AICenter() {
           </div>
           <div className="grid grid-cols-1 gap-3 mb-3">
             <select value={cmThreatType} onChange={e => setCmThreatType(e.target.value)}
-              className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm">
+              className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: cmThreatType, change: e => setCmThreatType(e.target.value), label: "cmThreatType", manual: false, json: false, sample: 'large_swarm' }, "p1-15284", undefined)}>
               {['single','small_swarm','large_swarm','coordinated_attack'].map(t => <option key={t} value={t}>{t}</option>)}
             </select>
             <input value={cmLevel} onChange={e => setCmLevel(e.target.value)} placeholder="Threat level (0-10)"
-              className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
+              className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: cmLevel, change: e => setCmLevel(e.target.value), label: "cmLevel", manual: false, json: false, sample: '9.0' }, "p1-15622", undefined)} />
             <input value={cmAvailable} onChange={e => setCmAvailable(e.target.value)} placeholder="Available countermeasures"
-              className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
+              className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: cmAvailable, change: e => setCmAvailable(e.target.value), label: "cmAvailable", manual: false, json: false, sample: 'laser, jammer, interceptor_drone' }, "p1-15838", undefined)} />
           </div>
           <button onClick={runCM} disabled={cmLoading}
             className="bg-green-700 hover:bg-green-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
@@ -213,7 +217,7 @@ export default function AICenter() {
             ))}
           </div>
           <textarea value={incidentInput} onChange={e => setIncidentInput(e.target.value)} placeholder="Describe the incident details, timeline, casualties, damage..."
-            rows={4} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm resize-none mb-3" />
+            rows={4} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm resize-none mb-3" data-full-ai-field={fullAIExamples.bind({ current: incidentInput, change: e => setIncidentInput(e.target.value), label: "incidentInput", manual: false, json: false, sample: '' }, "p1-17192", undefined)} />
           <button onClick={runIncident} disabled={incidentLoading || !incidentInput.trim()}
             className="bg-yellow-700 hover:bg-yellow-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
             <Sparkles size={16} />{incidentLoading ? 'Generating...' : 'Generate Report'}
@@ -231,7 +235,7 @@ export default function AICenter() {
             ))}
           </div>
           <textarea value={swarmData} onChange={e => setSwarmData(e.target.value)} placeholder="Paste recent threat data, times, locations, types, drone counts..."
-            rows={4} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm resize-none mb-3" />
+            rows={4} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm resize-none mb-3" data-full-ai-field={fullAIExamples.bind({ current: swarmData, change: e => setSwarmData(e.target.value), label: "swarmData", manual: false, json: false, sample: '' }, "p1-18637", undefined)} />
           <button onClick={runSwarm} disabled={swarmLoading || !swarmData.trim()}
             className="bg-blue-700 hover:bg-blue-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
             <Sparkles size={16} />{swarmLoading ? 'Predicting...' : 'Predict Next Attack'}
@@ -249,13 +253,13 @@ export default function AICenter() {
             ))}
           </div>
           <div className="grid grid-cols-2 gap-3 mb-3">
-            <input type="number" step="0.0001" value={trj.lat} onChange={e => setTrj({ ...trj, lat: parseFloat(e.target.value) })} placeholder="Latitude" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
-            <input type="number" step="0.0001" value={trj.lng} onChange={e => setTrj({ ...trj, lng: parseFloat(e.target.value) })} placeholder="Longitude" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
-            <input type="number" value={trj.altitude_m} onChange={e => setTrj({ ...trj, altitude_m: parseFloat(e.target.value) })} placeholder="Altitude (m)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
-            <input type="number" value={trj.speed_kmh} onChange={e => setTrj({ ...trj, speed_kmh: parseFloat(e.target.value) })} placeholder="Speed (km/h)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
-            <input type="number" value={trj.heading_deg} onChange={e => setTrj({ ...trj, heading_deg: parseFloat(e.target.value) })} placeholder="Heading (deg)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
-            <input type="number" value={trj.time_horizon_min} onChange={e => setTrj({ ...trj, time_horizon_min: parseInt(e.target.value) })} placeholder="Horizon (min)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
-            <select value={trj.threat_type} onChange={e => setTrj({ ...trj, threat_type: e.target.value })} className="col-span-2 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm">
+            <input type="number" step="0.0001" value={trj.lat} onChange={e => setTrj({ ...trj, lat: parseFloat(e.target.value) })} placeholder="Latitude" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: trj.lat, change: e => setTrj({ ...trj, lat: parseFloat(e.target.value) }), label: "trj.lat", manual: false, json: false, sample: 34.05 }, "p1-20115", undefined)} />
+            <input type="number" step="0.0001" value={trj.lng} onChange={e => setTrj({ ...trj, lng: parseFloat(e.target.value) })} placeholder="Longitude" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: trj.lng, change: e => setTrj({ ...trj, lng: parseFloat(e.target.value) }), label: "trj.lng", manual: false, json: false, sample: -118.24 }, "p1-20359", undefined)} />
+            <input type="number" value={trj.altitude_m} onChange={e => setTrj({ ...trj, altitude_m: parseFloat(e.target.value) })} placeholder="Altitude (m)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: trj.altitude_m, change: e => setTrj({ ...trj, altitude_m: parseFloat(e.target.value) }), label: "trj.altitude_m", manual: false, json: false, sample: 120 }, "p1-20604", undefined)} />
+            <input type="number" value={trj.speed_kmh} onChange={e => setTrj({ ...trj, speed_kmh: parseFloat(e.target.value) })} placeholder="Speed (km/h)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: trj.speed_kmh, change: e => setTrj({ ...trj, speed_kmh: parseFloat(e.target.value) }), label: "trj.speed_kmh", manual: false, json: false, sample: 80 }, "p1-20852", undefined)} />
+            <input type="number" value={trj.heading_deg} onChange={e => setTrj({ ...trj, heading_deg: parseFloat(e.target.value) })} placeholder="Heading (deg)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: trj.heading_deg, change: e => setTrj({ ...trj, heading_deg: parseFloat(e.target.value) }), label: "trj.heading_deg", manual: false, json: false, sample: 90 }, "p1-21098", undefined)} />
+            <input type="number" value={trj.time_horizon_min} onChange={e => setTrj({ ...trj, time_horizon_min: parseInt(e.target.value) })} placeholder="Horizon (min)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: trj.time_horizon_min, change: e => setTrj({ ...trj, time_horizon_min: parseInt(e.target.value) }), label: "trj.time_horizon_min", manual: false, json: false, sample: 5 }, "p1-21349", undefined)} />
+            <select value={trj.threat_type} onChange={e => setTrj({ ...trj, threat_type: e.target.value })} className="col-span-2 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: trj.threat_type, change: e => setTrj({ ...trj, threat_type: e.target.value }), label: "trj.threat_type", manual: false, json: false, sample: 'small_swarm' }, "p1-21608", undefined)}>
               {['single', 'small_swarm', 'large_swarm', 'coordinated_attack'].map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
@@ -273,12 +277,12 @@ export default function AICenter() {
             ))}
           </div>
           <div className="grid grid-cols-2 gap-3 mb-3">
-            <input type="number" value={fmt.drone_count} onChange={e => setFmt({ ...fmt, drone_count: parseInt(e.target.value) })} placeholder="Drone count" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
-            <input type="number" value={fmt.spread_m} onChange={e => setFmt({ ...fmt, spread_m: parseInt(e.target.value) })} placeholder="Spread (m)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
-            <input value={fmt.altitude_band} onChange={e => setFmt({ ...fmt, altitude_band: e.target.value })} placeholder="Altitude band" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
-            <input type="number" value={fmt.speed_kmh} onChange={e => setFmt({ ...fmt, speed_kmh: parseInt(e.target.value) })} placeholder="Speed (km/h)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
+            <input type="number" value={fmt.drone_count} onChange={e => setFmt({ ...fmt, drone_count: parseInt(e.target.value) })} placeholder="Drone count" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: fmt.drone_count, change: e => setFmt({ ...fmt, drone_count: parseInt(e.target.value) }), label: "fmt.drone_count", manual: false, json: false, sample: 12 }, "p1-23104", undefined)} />
+            <input type="number" value={fmt.spread_m} onChange={e => setFmt({ ...fmt, spread_m: parseInt(e.target.value) })} placeholder="Spread (m)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: fmt.spread_m, change: e => setFmt({ ...fmt, spread_m: parseInt(e.target.value) }), label: "fmt.spread_m", manual: false, json: false, sample: 200 }, "p1-23351", undefined)} />
+            <input value={fmt.altitude_band} onChange={e => setFmt({ ...fmt, altitude_band: e.target.value })} placeholder="Altitude band" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: fmt.altitude_band, change: e => setFmt({ ...fmt, altitude_band: e.target.value }), label: "fmt.altitude_band", manual: false, json: false, sample: '80-150m' }, "p1-23591", undefined)} />
+            <input type="number" value={fmt.speed_kmh} onChange={e => setFmt({ ...fmt, speed_kmh: parseInt(e.target.value) })} placeholder="Speed (km/h)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: fmt.speed_kmh, change: e => setFmt({ ...fmt, speed_kmh: parseInt(e.target.value) }), label: "fmt.speed_kmh", manual: false, json: false, sample: 70 }, "p1-23820", undefined)} />
           </div>
-          <textarea value={fmt.behavior_notes} onChange={e => setFmt({ ...fmt, behavior_notes: e.target.value })} placeholder="Behavior notes" rows={3} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm resize-none mb-3" />
+          <textarea value={fmt.behavior_notes} onChange={e => setFmt({ ...fmt, behavior_notes: e.target.value })} placeholder="Behavior notes" rows={3} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm resize-none mb-3" data-full-ai-field={fullAIExamples.bind({ current: fmt.behavior_notes, change: e => setFmt({ ...fmt, behavior_notes: e.target.value }), label: "fmt.behavior_notes", manual: false, json: false, sample: 'tight V-wedge advancing on perimeter' }, "p1-24079", undefined)} />
           <button onClick={fmtL.run} disabled={fmtL.loading} className="bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2"><Sparkles size={16} />{fmtL.loading ? 'Classifying...' : 'Classify Formation'}</button>
           <div className="mt-4"><AIResponse title="Formation Classification" content={fmtL.result} loading={fmtL.loading} /></div>
         </div>
@@ -292,7 +296,7 @@ export default function AICenter() {
               <button key={s.label} type="button" onClick={() => setSnTxt(s.value)} className="text-xs bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 px-2 py-1 rounded">{s.label}</button>
             ))}
           </div>
-          <textarea value={snTxt} onChange={e => setSnTxt(e.target.value)} placeholder="Sensor telemetry JSON array" rows={5} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-xs font-mono resize-none mb-3" />
+          <textarea value={snTxt} onChange={e => setSnTxt(e.target.value)} placeholder="Sensor telemetry JSON array" rows={5} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-xs font-mono resize-none mb-3" data-full-ai-field={fullAIExamples.bind({ current: snTxt, change: e => setSnTxt(e.target.value), label: "snTxt", manual: false, json: false, sample: '[{"name":"Radar-North-1","battery_pct":18,"detections_today":2,"status":"active"},{"name":"Optical-East-3","battery_pct":92,"detections_today":47,"status":"active"}]' }, "p1-25418", undefined)} />
           <button onClick={snL.run} disabled={snL.loading} className="bg-amber-700 hover:bg-amber-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2"><Sparkles size={16} />{snL.loading ? 'Scanning...' : 'Detect Anomalies'}</button>
           <div className="mt-4"><AIResponse title="Sensor Anomalies" content={snL.result} loading={snL.loading} /></div>
         </div>
@@ -306,7 +310,7 @@ export default function AICenter() {
               <button key={s.label} type="button" onClick={() => setPrTxt(s.value)} className="text-xs bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 px-2 py-1 rounded">{s.label}</button>
             ))}
           </div>
-          <textarea value={prTxt} onChange={e => setPrTxt(e.target.value)} placeholder="Threats JSON array" rows={5} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-xs font-mono resize-none mb-3" />
+          <textarea value={prTxt} onChange={e => setPrTxt(e.target.value)} placeholder="Threats JSON array" rows={5} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-xs font-mono resize-none mb-3" data-full-ai-field={fullAIExamples.bind({ current: prTxt, change: e => setPrTxt(e.target.value), label: "prTxt", manual: false, json: false, sample: '[{"type":"large_swarm","drone_count":45,"threat_level":9.2,"speed_kmh":85,"zone_name":"Northern Approach"},{"type":"single","drone_count":1,"threat_level":3.1,"speed_kmh":40,"zone_name":"Eastern Flank"}]' }, "p1-26724", undefined)} />
           <button onClick={prL.run} disabled={prL.loading} className="bg-rose-700 hover:bg-rose-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2"><Sparkles size={16} />{prL.loading ? 'Scoring...' : 'Score Priority'}</button>
           <div className="mt-4"><AIResponse title="Defensive Priority Queue" content={prL.result} loading={prL.loading} /></div>
         </div>
@@ -321,12 +325,12 @@ export default function AICenter() {
             ))}
           </div>
           <div className="grid grid-cols-2 gap-3 mb-3">
-            <select value={drl.difficulty} onChange={e => setDrl({ ...drl, difficulty: e.target.value })} className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm">
+            <select value={drl.difficulty} onChange={e => setDrl({ ...drl, difficulty: e.target.value })} className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: drl.difficulty, change: e => setDrl({ ...drl, difficulty: e.target.value }), label: "drl.difficulty", manual: false, json: false, sample: 'medium' }, "p1-28093", undefined)}>
               {['easy', 'medium', 'hard', 'expert'].map(d => <option key={d} value={d}>{d}</option>)}
             </select>
-            <input type="number" value={drl.team_size} onChange={e => setDrl({ ...drl, team_size: parseInt(e.target.value) })} placeholder="Team size" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
-            <input type="number" value={drl.duration_min} onChange={e => setDrl({ ...drl, duration_min: parseInt(e.target.value) })} placeholder="Duration (min)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
-            <input value={drl.focus_area} onChange={e => setDrl({ ...drl, focus_area: e.target.value })} placeholder="Focus area" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
+            <input type="number" value={drl.team_size} onChange={e => setDrl({ ...drl, team_size: parseInt(e.target.value) })} placeholder="Team size" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: drl.team_size, change: e => setDrl({ ...drl, team_size: parseInt(e.target.value) }), label: "drl.team_size", manual: false, json: false, sample: 6 }, "p1-28411", undefined)} />
+            <input type="number" value={drl.duration_min} onChange={e => setDrl({ ...drl, duration_min: parseInt(e.target.value) })} placeholder="Duration (min)" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: drl.duration_min, change: e => setDrl({ ...drl, duration_min: parseInt(e.target.value) }), label: "drl.duration_min", manual: false, json: false, sample: 45 }, "p1-28652", undefined)} />
+            <input value={drl.focus_area} onChange={e => setDrl({ ...drl, focus_area: e.target.value })} placeholder="Focus area" className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" data-full-ai-field={fullAIExamples.bind({ current: drl.focus_area, change: e => setDrl({ ...drl, focus_area: e.target.value }), label: "drl.focus_area", manual: false, json: false, sample: 'sensor handoff & coordination' }, "p1-28904", undefined)} />
           </div>
           <button onClick={drlL.run} disabled={drlL.loading} className="bg-indigo-700 hover:bg-indigo-800 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2"><Sparkles size={16} />{drlL.loading ? 'Designing...' : 'Generate Drill'}</button>
           <div className="mt-4"><AIResponse title="Training Drill" content={drlL.result} loading={drlL.loading} /></div>
